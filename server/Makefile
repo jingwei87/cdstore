@@ -26,4 +26,4 @@ server: main.cc $(MAIN_OBJS)
 clean:
 	@rm -f SERVER
 	@rm -f $(MAIN_OBJS)
-	@rm -f /meta/
+	@rm -rf meta/
