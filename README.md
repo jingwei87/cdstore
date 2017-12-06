@@ -33,11 +33,11 @@ The GF-Complete and LevelDB are packed in /client/lib/ and /server/lib/ respecti
 INSTALLATION
 ------------
 
+##install packages by apt
 
 For linux user you can install the OpenSSL and Boost by the following:
 
- * sudo apt-get install libssl1.0.0 libboost-all-dev
-
+ * sudo apt-get install libssl1.0.0 libboost-all-dev 
 
 CONFIGURATION
 -------------
