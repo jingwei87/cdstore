@@ -29,19 +29,6 @@ CDCodec* cdCodecObj;
 Downloader* downloaderObj;
 Configuration* confObj;
 
-void timerStart(double *t){
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    *t = (double)tv.tv_sec+(double)tv.tv_usec*1e-6;
-}
-
-double timerSplit(const double *t){
-    struct timeval tv;
-    double cur_t;
-    gettimeofday(&tv, NULL);
-    cur_t = (double)tv.tv_sec + (double)tv.tv_usec*1e-6;
-    return (cur_t - *t);
-}
 
 void usage(char *s){
     printf("usage: ./CLIENT [filename] [userID] [action] [secutiyType]\n- [filename]: full path of the file;\n- [userID]: use ID of current client;\n- [action]: [-u] upload; [-d] download;\n- [securityType]: [HIGH] AES-256 & SHA-256; [LOW] AES-128 & SHA-1\n");
@@ -122,9 +109,6 @@ int main(int argc, char *argv[]){
         uploaderObj = new Uploader(n,n,userID);
         encoderObj = new Encoder(CAONT_RS_TYPE, n, m, r, securetype, uploaderObj);
         chunkerObj = new Chunker(VAR_SIZE_TYPE);
-        double timer,split,bw, timer2, split2;
-        double total_t = 0;
-        timerStart(&timer2);
         //chunking
         //
         Encoder::Secret_Item_t header;
@@ -141,10 +125,7 @@ int main(int argc, char *argv[]){
         long total = 0;
         int totalChunks = 0;
         while (total < size){
-            timerStart(&timer);
             int ret = fread(buffer,1,bufferSize,fin);
-            split = timerSplit(&timer);
-            total_t += split;
             chunkerObj->chunking(buffer,ret,chunkEndIndexList,&numOfChunks);
 
             int count = 0;
@@ -170,10 +151,7 @@ int main(int argc, char *argv[]){
         }
         long long tt = 0, unique = 0;
         uploaderObj->indicateEnd(&tt, &unique);
-        split2 = timerSplit(&timer2);
 
-        bw = size/1024/1024/(split2-total_t);
-        printf("%lf\t%lld\t%lld\t%ld\n",bw, tt, unique, zero);
         delete uploaderObj;
         delete chunkerObj;
         delete encoderObj;
@@ -187,7 +165,6 @@ int main(int argc, char *argv[]){
         //cdCodecObj = new CDCodec(CAONT_RS_TYPE, n, m, r, cryptoObj);
         decoderObj = new Decoder(CAONT_RS_TYPE, n, m, r, securetype);
         downloaderObj = new Downloader(k,k,userID,decoderObj);
-        double timer,split,bw;
         char nameBuffer[256];
         sprintf(nameBuffer,"%s.d",argv[1]);
         FILE * fw = fopen(nameBuffer,"wb");
@@ -195,7 +172,6 @@ int main(int argc, char *argv[]){
         decoderObj->setFilePointer(fw);
         decoderObj->setShareIDList(kShareIDList);
 
-        timerStart(&timer);
         downloaderObj->downloadFile(argv[1], namesize, k);
         decoderObj->indicateEnd();
 

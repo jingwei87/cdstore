@@ -49,7 +49,7 @@ Socket::Socket(char *ip, int port, int userID){
 
     /* trying to connect socket */
     if(connect(hostSock_, (struct sockaddr*)&myAddr_, sizeof(myAddr_)) == -1){
-        if((err == errno) != EINPROGRESS){
+        if((err = errno) != EINPROGRESS){
             fprintf(stderr, "Error connecting socket %d\n", errno);
         }
     }
