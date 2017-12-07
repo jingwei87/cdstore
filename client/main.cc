@@ -58,12 +58,6 @@ int main(int argc, char *argv[]){
     char* securesetting = argv[4];
 
     /* read file */
-    FILE * fin = fopen(argv[1],"r");
-
-    /* get file size */
-    fseek(fin,0,SEEK_END);
-    long size = ftell(fin);	
-    fseek(fin,0,SEEK_SET);
 
     unsigned char * buffer;
     int *chunkEndIndexList;
@@ -118,6 +112,13 @@ int main(int argc, char *argv[]){
     if(strncmp(securesetting,"HIGH", 4) == 0) securetype = HIGH_SEC_PAIR_TYPE;
 
     if (strncmp(opt,"-u",2) == 0 || strncmp(opt, "-a", 2) == 0){
+
+        FILE * fin = fopen(argv[1],"r");
+
+        /* get file size */
+        fseek(fin,0,SEEK_END);
+        long size = ftell(fin);	
+        fseek(fin,0,SEEK_SET);
         uploaderObj = new Uploader(n,n,userID);
         encoderObj = new Encoder(CAONT_RS_TYPE, n, m, r, securetype, uploaderObj);
         chunkerObj = new Chunker(VAR_SIZE_TYPE);
@@ -176,6 +177,8 @@ int main(int argc, char *argv[]){
         delete uploaderObj;
         delete chunkerObj;
         delete encoderObj;
+
+        fclose(fin);    
     }
 
 
@@ -185,7 +188,9 @@ int main(int argc, char *argv[]){
         decoderObj = new Decoder(CAONT_RS_TYPE, n, m, r, securetype);
         downloaderObj = new Downloader(k,k,userID,decoderObj);
         double timer,split,bw;
-        FILE * fw = fopen("./decoded_copy","wb");
+        char nameBuffer[256];
+        sprintf(nameBuffer,"%s.d",argv[1]);
+        FILE * fw = fopen(nameBuffer,"wb");
 
         decoderObj->setFilePointer(fw);
         decoderObj->setShareIDList(kShareIDList);
@@ -193,9 +198,6 @@ int main(int argc, char *argv[]){
         timerStart(&timer);
         downloaderObj->downloadFile(argv[1], namesize, k);
         decoderObj->indicateEnd();
-        split = timerSplit(&timer);
-        bw = size/1024/1024/split;
-        printf("%lf\n",bw);
 
         fclose(fw);
         delete downloaderObj;
@@ -209,8 +211,6 @@ int main(int argc, char *argv[]){
     free(shareBuffer);
     free(kShareIDList);
     CryptoPrimitive::opensslLockCleanup();
-
-    fclose(fin);
     return 0;	
 
 
