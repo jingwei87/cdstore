@@ -1,5 +1,5 @@
-CONTENTS OF THIS FILE
----------------------
+# CONTENTS OF THIS FILE
+
    
  * Introduction
  * Requirements
@@ -9,14 +9,14 @@ CONTENTS OF THIS FILE
  * Example
  * Maintainers
 
-INTRODUCTION
-------------
+# INTRODUCTION
+
 
 CDStore builds on an augmented secret sharing scheme called convergent dispersal, which supports deduplication by using deterministic content-derived hashes as inputs to secret sharing. It combines convergent dispersal with two-stage deduplication to achieve both bandwidth and storage savings and be robust against side-channel attacks. 
 
 
-REQUIREMENTS
-------------
+# REQUIREMENTS
+
 
 CDStore is built on Ubuntu 12.04.3 LTS with gcc version 4.6.3.
 
@@ -30,17 +30,30 @@ This software requires the following libraries:
 The GF-Complete and LevelDB are packed in /client/lib/ and /server/lib/ respectively.
 
 
-INSTALLATION
-------------
+# INSTALLATION
 
-##install packages by apt
+
+## install packages by apt
 
 For linux user you can install the OpenSSL and Boost by the following:
 
- * sudo apt-get install libssl1.0.0 libboost-all-dev 
+ * sudo apt-get install libssl1.0.0 libboost-all-dev snappy
 
-CONFIGURATION
--------------
+## install package by yourself
+
+You need to using following command to install gf_complete in /client/lib/gf_complete
+
+```
+./Configure
+make 
+sudo make install 
+```
+
+
+
+
+# CONFIGURATION
+
 
 
  * Configure the server (CDStore requires at least 4 storage server)
@@ -75,8 +88,8 @@ CONFIGURATION
 		- set chunk and secure parameters following the comments
 		- set the number of storage nodes according to your running servers
 
-MAKE
-----
+# MAKE
+
 
 
 	To make a client, on the client machine:
@@ -91,8 +104,8 @@ MAKE
 
 
 
-EXAMPLE
--------
+# EXAMPLE
+
 
  * After successful make
 
@@ -114,17 +127,26 @@ EXAMPLE
 
 
 
-MAINTAINER
-----------
+# MAINTAINER
+
 
  * Current maintainer
 
-	- Chuan QIN, the Chinese University of Hong Kong, chintran27@gmail.com
+	- Yanjing Ren, UESTC, tinoryj@gmail.com
+	- JinGang Ma, UESTC, demon64523@gmail.com
 
  * Original maintainer
+
+	- Chuan QIN, the Chinese University of Hong Kong, chintran27@gmail.com
 
 	- Mingqiang Li, Lenovo Hong Kong, mingqianglicn@gmail.com
 
 
 
 
+# 临时测试脚本
+
+> 正式版本删除
+
+使用`AutoTest.sh`完成client、server编译并复制生成server2、server3、server4文件夹，便于测试
+使用`AutoClean.sh`完成清理（删除复制生成的其他三个server文件夹、完成make clean）
