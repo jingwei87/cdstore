@@ -3,6 +3,15 @@
 ## Introduction
 CDStore builds on an augmented secret sharing scheme called convergent dispersal, which supports deduplication by using deterministic content-derived hashes as inputs to secret sharing. It combines convergent dispersal with two-stage deduplication to achieve both bandwidth and storage savings and be robust against side-channel attacks. 
 
+### Publications
+- Mingqiang Li, Chuan Qin, and Patrick P. C. Lee 
+	**"CDStore: Toward Reliable, Secure, and Cost-Efficient Cloud Storage via Convergent Dispersal."** 
+	Proceedings of USENIX Annual Technical Conference (ATC 2015), Santa Clara, CA, July 2015.
+
+- Mingqiang Li, Chuan Qin, Jingwei Li, and Patrick P. C. Lee.
+	**"CDStore: Toward Reliable, Secure, and Cost-Efficient Cloud Storage via Convergent Dispersal."**
+	IEEE Internet Computing, 20(3), pp. 45-53, May-June 2016 (Special issue: Cloud Storage).
+	(An earlier version appeared in USENIX ATC 2015)
 
 ## Dependencies
 CDStore is built on Ubuntu 12.04.3 LTS with gcc version 4.6.3. This software requires the following libraries:
@@ -99,7 +108,7 @@ $ ./CLIENT test 1 -d LOW
 
 ## Limitations & Known Bugs
 
-- We assume the upload and download channels are secure (e.g., encrypted and authenticated), and do not implement mechanism for protection. We also assume that the user ID (input by CDStore client) is correct, so that the two-stage deduplication is robust against side-channel attacks.    
+- We assume the upload and download channels are secure (e.g., encrypted and authenticated), and do not implement mechanism for protection. We also assume that the user ID (input by CDStore client) is correct, so as to ensure the two-stage deduplication robust against side-channel attacks.    
 
 - When encode a test file generated via `urandom`, CDStore sometimes aborts with some errors like 
 	```
