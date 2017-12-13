@@ -33,13 +33,13 @@ $ sudo make install
 
 ## Configurations
 
-After installing the necessary libraries, following the instructions to config CDStore server and client.  
+After installing the necessary libraries, following the instructions to configure CDStore server and client.  
 
 ### Server
 
-CDStore requires at least 4 servers for reliability. Thus, you need to configure at least 4 servers and `make` them, respectively. In a successfully configured server, it has a directory `server/meta/` which stores the deduplication index, file recipes and share containers. 
+CDStore requires at least 4 servers for reliability. You need to configure and `make` them, respectively. In a successfully configured server, it has a directory `server/meta/` which stores the deduplication index, file recipes and share containers. 
 
-After a successful `make`, you will get the server program `SERVER`. Then, start it by the following command, where `[port]` is the port that CDStore server serves in.  
+After a successful `make`, you will get the server program `SERVER`. You can start it by the following command, where `[port]` is the port that CDStore server serves in.  
 
 ```
 $ ./SERVER [port]
@@ -50,76 +50,71 @@ $ ./SERVER [port]
 Modify the configuration file `client/config` to specify the server information. For example, if you have run 4 servers with `./SERVER [port]` on machines: 
 
 ```
-192.168.0.30 with port 11030
-192.168.0.31 with port 11031
-192.168.0.32 with port 11032
-192.168.0.33 with port 11033
+0.0.0.0 with port 11030
+0.0.0.0 with port 11031
+0.0.0.0 with port 11032
+0.0.0.0 with port 11033
 ```
 
 You need to change `client/config` to:
 
 ```
-192.168.0.30:11030
-192.168.0.31:11031
-192.168.0.32:11032
-192.168.0.33:11033
+0.0.0.0:11030
+0.0.0.0:11031
+0.0.0.0:11032
+0.0.0.0:11033
 ```
 
 Optionally, you can make advanced configure by modifying the total number of servers (4 by default), fault tolerance degree (1 by default), and security degree (0 by default) in `client/config`.
 
-After all configurations, type `make` in `client/` to create client program `CLIENT`.  
+After all configurations, change directory to `client/` and type `make` to create client program `CLIENT`.  
 
 ### Quick Start
 
-We provide scripts `auto_config.sh` and `auto_clean.sh` for quick configurations. You can run `./auto_config.sh` to compile and configure 4 servers, and run `./auto_clean.sh` to clean all temp outputs. 
-
-
+We provide scripts `auto_config.sh` and `auto_clean.sh` for quick configurations. You can run `./auto_config.sh` to compile and configure 4 servers, and run `./auto_clean.sh` to reset all configurations. 
 
 ## Usage
 
-=== done here
+You can use the executable file `CLIENT` (in `client/`) in the following way:
+
+```
+usage: ./CLIENT [filename] [userID] [action] [secutiyType]
+
+- [filename]: full path of the file;
+- [userID]: user ID of current client;
+- [action]: [-u] upload; [-d] download;
+- [securityType]: [HIGH] AES-256 & SHA-256; [LOW] AES-128 & SHA-1
+```
+
+We show two usage examples:  
+
+```
+// upload a file `test` from user 0 using high security mechanism (e.g., AES-256 & SHA-256)
+$ ./CLIENT test 0 -u HIGH
+
+// download a file `test`, from user 1 using low security mechanism (e.g., AES-128 & SHA-1)
+// the downloaded file will be renamed to be test.d automatically
+$ ./CLIENT test 1 -d LOW
+```
+
+## Limitations & Known Bugs
+
+- We assume the upload and download channels are secure (e.g., encrypted and authenticated), and do not implement mechanism for protection. We also assume that the user ID (input by CDStore client) is correct, so that the two-stage deduplication is robust against side-channel attacks.    
+
+- When encode a test file generated via `urandom`, CDStore sometimes aborts with some errors like 
+	```
+	Error in region multiply operation.
+	The source & destination pointers must be aligned with respect to each other along a 16 byte boundary.
+	``` 
+	The error is possibly due to the library `gf_complete` that cannot encode random content.
 
 
- * After successful make
 
-	usage: ./CLIENT [filename] [userID] [action] [secutiyType]
-
-	- [filename]: full path of the file;
-	- [userID]: user ID of current client;
-	- [action]: [-u] upload; [-d] download;
-	- [securityType]: [HIGH] AES-256 & SHA-256; [LOW] AES-128 & SHA-1
-
-
- * To upload a file "test", assuming from user "0" using AES-256 & SHA-256
-
-	./CLIENT test 0 -u HIGH
-
- * To download a file "test", assuming from user "1" using AES-128 & SHA-1
-
-	./CLIENT test 1 -d LOW
-
-
-
-# MAINTAINER
-
-
+## Maintainers
  * Current maintainer
-
 	- Yanjing Ren, UESTC, tinoryj@gmail.com
 	- JinGang Ma, UESTC, demon64523@gmail.com
 
  * Original maintainer
-
-	- Chuan QIN, the Chinese University of Hong Kong, chintran27@gmail.com
-
-	- Mingqiang Li, Lenovo Hong Kong, mingqianglicn@gmail.com
-
-
-
-
-# 临时测试脚本
-
-> 正式版本删除
-
-使用`AutoTest.sh`完成client、server编译并复制生成server2、server3、server4文件夹，便于测试
-使用`AutoClean.sh`完成清理（删除复制生成的其他三个server文件夹、完成make clean）
+	- Chuan Qin, CUHK, chintran27@gmail.com
+	- Mingqiang Li, CUHK, mingqianglicn@gmail.com
